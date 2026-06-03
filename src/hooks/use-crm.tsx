@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { Lead, SourceId, StageId } from '@/types/crm'
 import { toast } from '@/hooks/use-toast'
-import { getClientes, createCliente, updateCliente, moveCliente } from '@/services/crm'
+import { getClientes, createCliente, updateCliente, moveCliente, deleteCliente } from '@/services/crm'
 import { useRealtime } from '@/hooks/use-realtime'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -18,6 +18,7 @@ interface CRMContextType {
   addLead: (lead: Partial<Lead> & { notes?: string }) => Promise<void>
   updateLead: (id: string, data: Partial<Lead>) => Promise<void>
   moveLead: (id: string, newStage: StageId) => Promise<void>
+  deleteLead: (id: string) => Promise<void>
   filteredLeads: Lead[]
 }
 
@@ -118,6 +119,21 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
     [loadData],
   )
 
+  const deleteLead = useCallback(async (id: string) => {
+    setLeads((prev) => prev.filter((l) => l.id !== id))
+    try {
+      await deleteCliente(id)
+      toast({ title: 'Cliente excluído' })
+    } catch (err) {
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível excluir o cliente.',
+        variant: 'destructive',
+      })
+      loadData()
+    }
+  }, [loadData])
+
   const filteredLeads = leads.filter((lead) => {
     const matchesSearch =
       lead.nome?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -145,6 +161,7 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
     addLead,
     updateLead,
     moveLead,
+    deleteLead,
     filteredLeads,
   }
 

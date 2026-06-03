@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Building2, Mail, Calendar as CalendarIcon, Video, Loader2, Instagram } from 'lucide-react'
+import { Building2, Mail, Calendar as CalendarIcon, Video, Loader2, Instagram, Trash2 } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Lead } from '@/types/crm'
@@ -7,7 +7,19 @@ import { Button } from '@/components/ui/button'
 import { LeadDetailsDialog } from './lead-details-dialog'
 import { ScheduleMeetingDialog } from './schedule-meeting-dialog'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import pb from '@/lib/pocketbase/client'
+import { useCRM } from '@/hooks/use-crm'
 
 function MeetingDetailsPopover({ leadId }: { leadId: string }) {
   const [meeting, setMeeting] = useState<any>(null)
@@ -81,6 +93,7 @@ interface LeadCardProps {
 export function LeadCard({ lead }: LeadCardProps) {
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [scheduleOpen, setScheduleOpen] = useState(false)
+  const { deleteLead } = useCRM()
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('text/plain', lead.id)
@@ -185,6 +198,37 @@ export function LeadCard({ lead }: LeadCardProps) {
           >
             <CalendarIcon className="h-4 w-4" />
           </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10 shrink-0"
+                onClick={(e) => e.stopPropagation()}
+                title="Excluir cliente"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Excluir cliente?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta ação não pode ser desfeita. <strong>{lead.nome}</strong> e todo o histórico
+                  associado serão removidos permanentemente.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-600 hover:bg-red-700"
+                  onClick={() => deleteLead(lead.id)}
+                >
+                  Excluir
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 

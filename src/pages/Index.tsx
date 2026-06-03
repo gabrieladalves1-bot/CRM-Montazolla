@@ -44,7 +44,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="icon"
-                className="bg-white text-slate-900 border-slate-200 hover:bg-slate-100 shrink-0"
+                className="shrink-0"
                 onClick={() => {
                   navigator.clipboard.writeText(`${window.location.origin}/agendar`)
                   toast({

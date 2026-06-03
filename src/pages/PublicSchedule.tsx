@@ -85,7 +85,7 @@ export default function PublicSchedule() {
 
   if (success) {
     return (
-      <div className="h-[100dvh] md:min-h-screen md:h-auto bg-white md:bg-slate-50 flex items-center justify-center p-4">
+      <div className="h-[100dvh] md:min-h-screen md:h-auto bg-white md:bg-slate-50 text-gray-900 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white md:rounded-2xl md:shadow-lg p-6 md:p-8 text-center flex flex-col items-center justify-center h-full md:h-auto">
           <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shrink-0">
             <CheckCircle2 className="w-8 h-8" />
@@ -116,7 +116,7 @@ export default function PublicSchedule() {
   }
 
   return (
-    <div className="h-[100dvh] md:h-auto md:min-h-screen bg-white md:bg-slate-50 flex flex-col md:items-center md:py-12 md:px-4 sm:px-6">
+    <div className="h-[100dvh] md:h-auto md:min-h-screen bg-white md:bg-slate-50 text-gray-900 flex flex-col md:items-center md:py-12 md:px-4 sm:px-6">
       <div className="w-full h-full md:h-auto max-w-4xl bg-white md:rounded-2xl md:shadow-xl overflow-hidden flex flex-col md:flex-row md:min-h-[600px]">
         {/* Sidebar */}
         <div className="md:w-1/3 bg-slate-900 text-white p-4 pb-4 md:p-8 flex flex-col shrink-0">

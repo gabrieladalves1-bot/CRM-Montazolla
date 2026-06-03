@@ -39,6 +39,10 @@ export const moveCliente = async (id: string, estagio_pipeline: string): Promise
   return pb.collection('clientes').update<Lead>(id, { estagio_pipeline })
 }
 
+export const deleteCliente = async (id: string): Promise<void> => {
+  await pb.collection('clientes').delete(id)
+}
+
 export const getAnotacoes = async (cliente_id: string) => {
   return pb.collection('anotacoes_cliente').getFullList({
     filter: `cliente_id = "${cliente_id}"`,

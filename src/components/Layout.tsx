@@ -8,7 +8,7 @@ export default function Layout() {
     <SidebarProvider defaultOpen={false}>
       <Header />
       <AppSidebar />
-      <SidebarInset className="flex flex-col h-screen pt-14 overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <SidebarInset className="flex flex-col h-screen pt-14 overflow-hidden bg-background">
         <main className="flex-1 overflow-hidden relative">
           <div className="absolute inset-0 overflow-y-auto">
             <Outlet />

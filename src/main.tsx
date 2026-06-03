@@ -4,4 +4,6 @@ import App from './App.tsx'
 import './main.css'
 
 // @skip-protected: Do not remove. Required for React rendering.
+document.documentElement.classList.add('dark')
+
 createRoot(document.getElementById('root')!).render(<App />)

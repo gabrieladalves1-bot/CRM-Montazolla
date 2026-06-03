@@ -1,0 +1,29 @@
+.icon-only-wrapper button {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0 !important;
+  color: transparent !important;
+  gap: 0 !important;
+}
+
+.icon-only-wrapper button svg.lucide {
+  margin: 0 !important;
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+}
+
+.icon-only-wrapper button:not(.bg-primary):not(.bg-destructive) svg.lucide {
+  color: hsl(var(--foreground)) !important;
+}
+
+.icon-only-wrapper button.bg-primary svg.lucide {
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.icon-only-wrapper button.bg-destructive svg.lucide {
+  color: hsl(var(--destructive-foreground)) !important;
+}

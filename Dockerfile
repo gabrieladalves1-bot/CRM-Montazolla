@@ -1,12 +1,14 @@
 FROM alpine:3.19
 
-ARG PB_VERSION=0.26.9
+RUN apk add --no-cache ca-certificates unzip curl
 
-RUN apk add --no-cache unzip ca-certificates curl
-
-RUN curl -fsSL \
-      "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip" \
-      -o /tmp/pb.zip \
+# Detecta a versão mais recente e baixa automaticamente
+RUN LATEST=$(curl -fsSL -o /dev/null -w "%{url_effective}" \
+      "https://github.com/pocketbase/pocketbase/releases/latest" \
+      | sed 's|.*/v||') \
+    && curl -fsSL \
+       "https://github.com/pocketbase/pocketbase/releases/download/v${LATEST}/pocketbase_${LATEST}_linux_amd64.zip" \
+       -o /tmp/pb.zip \
     && unzip -o /tmp/pb.zip -d /pb \
     && rm /tmp/pb.zip \
     && chmod +x /pb/pocketbase

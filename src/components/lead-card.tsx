@@ -115,11 +115,11 @@ export function LeadCard({ lead }: LeadCardProps) {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onClick={() => setDetailsOpen(true)}
-        className="group relative flex items-center justify-between rounded-xl border bg-card p-3 text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing animate-fade-in-up select-none"
+        className="group relative flex items-center justify-between rounded-xl border border-gray-200 bg-white p-3 text-gray-900 shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing animate-fade-in-up select-none"
       >
         <div className="flex flex-col overflow-hidden mr-2">
           <h4 className="font-medium text-sm truncate">{lead.nome}</h4>
-          <div className="flex items-center text-xs text-muted-foreground truncate mt-0.5">
+          <div className="flex items-center text-xs text-gray-500 truncate mt-0.5">
             <Building2 className="mr-1 h-3 w-3 shrink-0" />
             <span className="truncate">{lead.empresa}</span>
           </div>

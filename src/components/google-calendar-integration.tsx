@@ -105,7 +105,7 @@ export function GoogleCalendarIntegration() {
             size="icon"
             onClick={handleDisconnect}
             disabled={isLoading}
-            className="bg-white text-slate-900 border-slate-200 hover:bg-slate-100 shrink-0"
+            className="shrink-0"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

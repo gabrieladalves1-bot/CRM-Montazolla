@@ -319,7 +319,7 @@ export function ImportLeadsModal() {
             <Button
               variant="outline"
               size="icon"
-              className="bg-white text-slate-900 border-slate-200 hover:bg-slate-100 shrink-0"
+              className="shrink-0"
             >
               <UploadCloud className="h-4 w-4" />
               <span className="sr-only">Importar Leads</span>

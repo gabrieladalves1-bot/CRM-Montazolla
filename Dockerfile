@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.20
 
 RUN apk add --no-cache ca-certificates unzip curl
 
@@ -15,7 +15,6 @@ RUN LATEST=$(curl -fsSL -o /dev/null -w "%{url_effective}" \
 COPY pocketbase/hooks /pb/pb_hooks
 COPY pocketbase/migrations /pb/pb_migrations
 
-# WORKDIR garante que pb_hooks e pb_migrations sejam encontrados pelo PocketBase
 WORKDIR /pb
 
 EXPOSE 8090

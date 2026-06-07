@@ -17,6 +17,7 @@ import {
   Copy,
   Loader2,
   AlertCircle,
+  Sparkles,
 } from 'lucide-react'
 import {
   Dialog,
@@ -46,6 +47,80 @@ import { ToastAction } from '@/components/ui/toast'
 import pb from '@/lib/pocketbase/client'
 import { toast } from '@/hooks/use-toast'
 import { scheduleMeeting } from '@/services/crm'
+
+function PropostaTab({ lead }: { lead: Lead }) {
+  const [proposta, setProposta] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const gerar = async () => {
+    setLoading(true)
+    try {
+      const res = await pb.send('/backend/v1/gerar-proposta', {
+        method: 'POST',
+        body: JSON.stringify({ cliente_id: lead.id }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      setProposta(res.proposta || '')
+    } catch {
+      toast({ title: 'Erro ao gerar proposta', variant: 'destructive' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const copiar = () => {
+    navigator.clipboard.writeText(proposta)
+    toast({ title: 'Proposta copiada!' })
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="font-semibold text-sm">Proposta com Sofia</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            A IA gera uma proposta personalizada com base nos dados do lead.
+          </p>
+        </div>
+        <Button onClick={gerar} disabled={loading} className="gap-2 shrink-0">
+          <Sparkles className="h-4 w-4" />
+          {loading ? 'Gerando...' : 'Gerar Proposta'}
+        </Button>
+      </div>
+
+      {proposta && (
+        <div className="space-y-2">
+          <Textarea
+            value={proposta}
+            onChange={(e) => setProposta(e.target.value)}
+            rows={16}
+            className="text-sm resize-y"
+          />
+          <div className="flex gap-2 justify-end">
+            <Button variant="outline" size="sm" onClick={copiar} className="gap-2">
+              <Copy className="h-4 w-4" />
+              Copiar
+            </Button>
+            {lead.telefone && (
+              <Button
+                size="sm"
+                className="gap-2"
+                onClick={() => {
+                  const encoded = encodeURIComponent(proposta)
+                  const phone = lead.telefone!.replace(/\D/g, '')
+                  window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank')
+                }}
+              >
+                <Send className="h-4 w-4" />
+                Enviar via WhatsApp
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 interface LeadDetailsDialogProps {
   lead: Lead | null
@@ -286,6 +361,12 @@ export function LeadDetailsDialog({ lead, open, onOpenChange }: LeadDetailsDialo
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-blue-600 py-4 px-1 transition-all text-sm font-semibold text-gray-500"
               >
                 Histórico
+              </TabsTrigger>
+              <TabsTrigger
+                value="proposta"
+                className="pb-3 px-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none bg-transparent text-muted-foreground data-[state=active]:text-foreground font-medium text-sm transition-colors"
+              >
+                Proposta (Sofia)
               </TabsTrigger>
               <TabsTrigger
                 value="meeting"
@@ -570,6 +651,9 @@ export function LeadDetailsDialog({ lead, open, onOpenChange }: LeadDetailsDialo
                   Nenhum histórico registrado.
                 </div>
               )}
+            </TabsContent>
+            <TabsContent value="proposta">
+              <PropostaTab lead={lead} />
             </TabsContent>
             <TabsContent
               value="meeting"

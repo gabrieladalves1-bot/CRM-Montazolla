@@ -126,5 +126,50 @@ routerAdd('POST', '/backend/v1/book/{userId}', (e) => {
     txApp.save(reuniaoRecord)
   })
 
+  // Enviar confirmação de agendamento via WhatsApp
+  try {
+    const confirmacaoRecord = $app.findFirstRecordByFilter(
+      'agentes_config',
+      "slug = 'confirmacao_agendamento' && ativo = true && tipo = 'automacao'",
+    )
+    const templateMsg = confirmacaoRecord.getString('template_mensagem')
+    if (templateMsg && phone) {
+      const pad = (n) => String(n).padStart(2, '0')
+      const d = slotStart
+      const dataFormatada = `${pad(d.getDate())}/${pad(d.getMonth() + 1)} às ${pad(d.getHours())}:${pad(d.getMinutes())}`
+
+      const mensagem = templateMsg
+        .replace(/\{\{nome\}\}/g, nome)
+        .replace(/\{\{empresa\}\}/g, empresa || nome)
+        .replace(/\{\{data_hora\}\}/g, dataFormatada)
+        .replace(/\{\{link_reuniao\}\}/g, meetLink || '')
+
+      const instanceId = $os.getenv('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E'
+      const waToken = $os.getenv('WA_TOKEN') || '556AE67289E74FD28A396530'
+      const clientToken =
+        $os.getenv('ZAPI_CLIENT_TOKEN') ||
+        $os.getenv('WA_CLIENT_TOKEN') ||
+        'F6e10c7524601499e9a6591ecf0c56ca1S'
+
+      const res = $http.send({
+        url: `https://api.z-api.io/instances/${instanceId}/token/${waToken}/send-text`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Client-Token': clientToken },
+        body: JSON.stringify({ phone: phone, message: mensagem }),
+        timeout: 15,
+      })
+
+      if (res.statusCode === 200 && clienteId) {
+        const histCol = $app.findCollectionByNameOrId('historico_contatos')
+        const hist = new Record(histCol)
+        hist.set('cliente_id', clienteId)
+        hist.set('tipo_contato', 'WhatsApp')
+        hist.set('descricao', `[CONFIRMACAO] ${mensagem}`)
+        hist.set('data_contato', new Date().toISOString())
+        $app.save(hist)
+      }
+    }
+  } catch (_) {}
+
   return e.json(200, { success: true })
 })

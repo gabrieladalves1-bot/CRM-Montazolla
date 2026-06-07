@@ -17,10 +17,13 @@ COPY pocketbase/migrations /pb/pb_migrations
 
 EXPOSE 8090
 
-# Se ADMIN_EMAIL e ADMIN_PASSWORD estiverem definidos, cria ou atualiza o superuser
 CMD ["/bin/sh", "-c", "\
   if [ -n \"$ADMIN_EMAIL\" ] && [ -n \"$ADMIN_PASSWORD\" ]; then \
     /pb/pocketbase superuser create \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\" 2>/dev/null || \
     /pb/pocketbase superuser update \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\" 2>/dev/null || true; \
   fi; \
-  exec /pb/pocketbase serve --http=0.0.0.0:${PORT:-8090} --dir=/pb/pb_data"]
+  exec /pb/pocketbase serve \
+    --http=0.0.0.0:${PORT:-8090} \
+    --dir=/pb/pb_data \
+    --hooksDir=/pb/pb_hooks \
+    --migrationsDir=/pb/pb_migrations"]

@@ -6,8 +6,8 @@ cronAdd('sync_google_calendar', '*/15 * * * *', () => {
     return
   }
 
-  const clientId = $secrets.get('GOOGLE_CALENDAR_CLIENT_ID')
-  const clientSecret = $secrets.get('GOOGLE_CALENDAR_CLIENT_SECRET')
+  const clientId = $os.getenv('GOOGLE_CALENDAR_CLIENT_ID')
+  const clientSecret = $os.getenv('GOOGLE_CALENDAR_CLIENT_SECRET')
 
   for (const tokenRecord of tokens) {
     const userId = tokenRecord.getString('user_id')

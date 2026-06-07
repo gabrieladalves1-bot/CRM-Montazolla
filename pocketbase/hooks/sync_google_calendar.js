@@ -10,8 +10,8 @@ routerAdd(
       return e.json(200, { message: 'No token found' })
     }
 
-    const clientId = $secrets.get('GOOGLE_CALENDAR_CLIENT_ID')
-    const clientSecret = $secrets.get('GOOGLE_CALENDAR_CLIENT_SECRET')
+    const clientId = $os.getenv('GOOGLE_CALENDAR_CLIENT_ID')
+    const clientSecret = $os.getenv('GOOGLE_CALENDAR_CLIENT_SECRET')
 
     let accessToken = tokenRecord.getString('access_token')
     const expiresAt = new Date(tokenRecord.getString('expires_at'))

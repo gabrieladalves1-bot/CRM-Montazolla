@@ -32,7 +32,7 @@ Durante a conversa, identifique o NOME do cliente e a EMPRESA/Nicho de atuação
 Tom de voz: Profissional, prestativo, persuasivo, mas não insistente. Seja conciso.`
 
 function callClaudeAgent(agenteAtivo, clienteId, currentMessage) {
-  const ANTHROPIC_API_KEY = $secrets.get('ANTHROPIC_API_KEY')
+  const ANTHROPIC_API_KEY = $os.getenv('ANTHROPIC_API_KEY')
   if (!ANTHROPIC_API_KEY) {
     $app.logger().error('ANTHROPIC_API_KEY not configured in PocketBase secrets')
     return 'Olá! No momento estou passando por uma atualização. Por favor, tente novamente em alguns instantes.'
@@ -292,11 +292,11 @@ routerAdd('POST', '/backend/v1/zapi-webhook', (e) => {
     return e.json(500, { error: 'AI agent failed' })
   }
 
-  const instanceId = $secrets.get('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E'
-  const token = $secrets.get('WA_TOKEN') || '556AE67289E74FD28A396530'
+  const instanceId = $os.getenv('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E'
+  const token = $os.getenv('WA_TOKEN') || '556AE67289E74FD28A396530'
   const clientToken =
-    $secrets.get('ZAPI_CLIENT_TOKEN') ||
-    $secrets.get('WA_CLIENT_TOKEN') ||
+    $os.getenv('ZAPI_CLIENT_TOKEN') ||
+    $os.getenv('WA_CLIENT_TOKEN') ||
     'F6e10c7524601499e9a6591ecf0c56ca1S'
 
   if (instanceId && token) {

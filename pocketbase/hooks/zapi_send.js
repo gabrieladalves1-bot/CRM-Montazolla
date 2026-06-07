@@ -29,11 +29,11 @@ routerAdd(
       phone = '55' + phone
     }
 
-    const instanceId = $secrets.get('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E'
-    const token = $secrets.get('WA_TOKEN') || '556AE67289E74FD28A396530'
+    const instanceId = $os.getenv('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E'
+    const token = $os.getenv('WA_TOKEN') || '556AE67289E74FD28A396530'
     const clientToken =
-      $secrets.get('ZAPI_CLIENT_TOKEN') ||
-      $secrets.get('WA_CLIENT_TOKEN') ||
+      $os.getenv('ZAPI_CLIENT_TOKEN') ||
+      $os.getenv('WA_CLIENT_TOKEN') ||
       'F6e10c7524601499e9a6591ecf0c56ca1S'
 
     let res

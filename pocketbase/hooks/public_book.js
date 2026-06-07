@@ -22,8 +22,8 @@ routerAdd('POST', '/backend/v1/book/{userId}', (e) => {
     const now = Date.now()
     if (now >= expiresAt - 60000) {
       const refreshToken = tokenRecord.getString('refresh_token')
-      const clientId = $secrets.get('GOOGLE_CALENDAR_CLIENT_ID')
-      const clientSecret = $secrets.get('GOOGLE_CALENDAR_CLIENT_SECRET')
+      const clientId = $os.getenv('GOOGLE_CALENDAR_CLIENT_ID')
+      const clientSecret = $os.getenv('GOOGLE_CALENDAR_CLIENT_SECRET')
       if (refreshToken && clientId && clientSecret) {
         const res = $http.send({
           url: 'https://oauth2.googleapis.com/token',

@@ -11,11 +11,11 @@ const DAY = 24 * HOUR
 
 function getZApiCreds() {
   return {
-    instanceId: $secrets.get('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E',
-    token: $secrets.get('WA_TOKEN') || '556AE67289E74FD28A396530',
+    instanceId: $os.getenv('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E',
+    token: $os.getenv('WA_TOKEN') || '556AE67289E74FD28A396530',
     clientToken:
-      $secrets.get('ZAPI_CLIENT_TOKEN') ||
-      $secrets.get('WA_CLIENT_TOKEN') ||
+      $os.getenv('ZAPI_CLIENT_TOKEN') ||
+      $os.getenv('WA_CLIENT_TOKEN') ||
       'F6e10c7524601499e9a6591ecf0c56ca1S',
   }
 }
@@ -52,7 +52,7 @@ function sendAndLog(telefone, message, clienteId, tag) {
 }
 
 function genMessage(systemPrompt, userPrompt, fallback) {
-  const key = $secrets.get('ANTHROPIC_API_KEY')
+  const key = $os.getenv('ANTHROPIC_API_KEY')
   if (!key) return fallback
   try {
     const res = $http.send({

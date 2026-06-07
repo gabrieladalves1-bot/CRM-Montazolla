@@ -6,7 +6,7 @@ Use SEMPRE e APENAS asterisco simples para negrito. Nunca use **.
 Envie uma mensagem curta, educada e natural perguntando se o cliente conseguiu acessar o link de agendamento ou se tem alguma dúvida. Seja conciso — no máximo 2 linhas.`
 
 function callClaudeFollowUp(clienteId, telefone) {
-  const ANTHROPIC_API_KEY = $secrets.get('ANTHROPIC_API_KEY')
+  const ANTHROPIC_API_KEY = $os.getenv('ANTHROPIC_API_KEY')
   if (!ANTHROPIC_API_KEY) {
     return 'Oi! Vi que te enviei o link para agendamento. Conseguiu acessar? Se tiver alguma dúvida ou dificuldade, me avise!'
   }
@@ -142,8 +142,8 @@ cronAdd('follow_up_antonio', '*/15 * * * *', () => {
 
         const msgText = callClaudeFollowUp(clienteId, telefone)
 
-        const instanceId = $secrets.get('WA_INSTANCE_ID')
-        const token = $secrets.get('WA_TOKEN')
+        const instanceId = $os.getenv('WA_INSTANCE_ID')
+        const token = $os.getenv('WA_TOKEN')
         if (instanceId && token) {
           const res = $http.send({
             url: 'https://api.z-api.io/instances/' + instanceId + '/token/' + token + '/send-text',

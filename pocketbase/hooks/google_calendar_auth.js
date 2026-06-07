@@ -10,8 +10,8 @@ routerAdd(
       return e.badRequestError('Missing code or redirectUri')
     }
 
-    const clientId = $secrets.get('GOOGLE_CALENDAR_CLIENT_ID')
-    const clientSecret = $secrets.get('GOOGLE_CALENDAR_CLIENT_SECRET')
+    const clientId = $os.getenv('GOOGLE_CALENDAR_CLIENT_ID')
+    const clientSecret = $os.getenv('GOOGLE_CALENDAR_CLIENT_SECRET')
 
     if (!clientId || !clientSecret) {
       return e.internalServerError('Google API credentials not configured')

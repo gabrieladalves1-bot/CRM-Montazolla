@@ -26,8 +26,8 @@ routerAdd(
           google: 'Sua sessão com o Google expirou. Conecte sua conta novamente.',
         })
       }
-      const clientId = $secrets.get('GOOGLE_CALENDAR_CLIENT_ID')
-      const clientSecret = $secrets.get('GOOGLE_CALENDAR_CLIENT_SECRET')
+      const clientId = $os.getenv('GOOGLE_CALENDAR_CLIENT_ID')
+      const clientSecret = $os.getenv('GOOGLE_CALENDAR_CLIENT_SECRET')
 
       const res = $http.send({
         url: 'https://oauth2.googleapis.com/token',

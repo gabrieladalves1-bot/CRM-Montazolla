@@ -5,7 +5,7 @@
 | Parte | Plataforma | URL final |
 |---|---|---|
 | Backend (PocketBase) | Railway | `https://SEU-PROJETO.up.railway.app` |
-| Frontend (React) | Cloudflare Pages | `https://crm.montazolla.com` |
+| Frontend (React) | Cloudflare Pages | `https://app.montazolla.com` |
 
 ---
 
@@ -82,13 +82,13 @@ https://SEU-PROJETO.up.railway.app/backend/v1/zapi-webhook
    ```
    VITE_POCKETBASE_URL=https://SEU-PROJETO.up.railway.app
    ```
-5. Conecte o domínio `crm.montazolla.com` nas configurações de DNS
+5. Conecte o domínio `app.montazolla.com` nas configurações de DNS
 
 ---
 
 ## Passo 4 — Testar
 
-1. Acesse `https://crm.montazolla.com`
+1. Acesse `https://app.montazolla.com`
 2. Faça login com as credenciais criadas no PocketBase
 3. Crie um lead de teste e verifique se aparece no Kanban
 4. Envie uma mensagem de teste via ZApi e verifique se o agente responde

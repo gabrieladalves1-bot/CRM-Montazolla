@@ -96,7 +96,7 @@ cronAdd('follow_up_antonio', '*/15 * * * *', () => {
 
     const records = $app.findRecordsByFilter(
       'historico_contatos',
-      "tipo_contato = 'WhatsApp' && descricao ~ 'crm.montazolla.com/agendar' && created < {:time}",
+      "tipo_contato = 'WhatsApp' && descricao ~ 'app.montazolla.com/agendar' && created < {:time}",
       '-created',
       100,
       0,

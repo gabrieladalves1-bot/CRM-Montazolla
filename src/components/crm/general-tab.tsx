@@ -36,6 +36,7 @@ const generalSchema = z.object({
   site: z.string().url('URL inválida').optional().or(z.literal('')),
   categoria: z.string().optional(),
   maps_url: z.string().url('URL inválida').optional().or(z.literal('')),
+  agente_ativo: z.enum(['Antônio', 'Alexandre', 'Manual']).optional(),
 })
 
 export type GeneralFormValues = z.infer<typeof generalSchema>
@@ -74,6 +75,7 @@ export function GeneralTab({ lead, onSave, onCancel }: GeneralTabProps) {
       site: lead.site || '',
       categoria: lead.categoria || '',
       maps_url: lead.maps_url || '',
+      agente_ativo: (lead.agente_ativo as any) || 'Antônio',
     },
   })
 
@@ -286,6 +288,28 @@ export function GeneralTab({ lead, onSave, onCancel }: GeneralTabProps) {
             )}
           />
         </div>
+        <FormField
+            control={form.control}
+            name="agente_ativo"
+            render={({ field }) => (
+              <FormItem className="col-span-full">
+                <FormLabel>Agente de IA</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o agente..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Antônio">Antônio — responde leads inbound</SelectItem>
+                    <SelectItem value="Alexandre">Alexandre — prospecção ativa</SelectItem>
+                    <SelectItem value="Manual">Manual — sem resposta automática</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancelar

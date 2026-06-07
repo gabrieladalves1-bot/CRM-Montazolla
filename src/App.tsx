@@ -13,6 +13,7 @@ import { CRMProvider } from './hooks/use-crm'
 import { AuthProvider } from './hooks/use-auth'
 import GoogleCalendarCallback from './pages/GoogleCalendarCallback'
 import PublicSchedule from './pages/PublicSchedule'
+import Agentes from './pages/Agentes'
 import './styles/icon-buttons.css'
 
 const App = () => (
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/agenda" element={<Agenda />} />
               <Route path="/documentos" element={<Documentos />} />
               <Route path="/chat" element={<Chat />} />
+              <Route path="/agentes" element={<Agentes />} />
             </Route>
             <Route path="/callback" element={<GoogleCalendarCallback />} />
             <Route path="/agendar" element={<PublicSchedule />} />

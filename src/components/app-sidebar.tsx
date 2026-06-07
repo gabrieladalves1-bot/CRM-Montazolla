@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, KanbanSquare, Calendar, FileText, MessageCircle } from 'lucide-react'
+import { LayoutDashboard, KanbanSquare, Calendar, FileText, MessageCircle, Bot } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -67,6 +67,14 @@ export function AppSidebar() {
                   <Link to="/chat">
                     <MessageCircle className="h-4 w-4" />
                     <span>Chat (IA)</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={location.pathname === '/agentes'}>
+                  <Link to="/agentes">
+                    <Bot className="h-4 w-4" />
+                    <span>Agentes</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

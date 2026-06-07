@@ -31,10 +31,30 @@ Durante a conversa, identifique o NOME do cliente e a EMPRESA/Nicho de atuação
 
 Tom de voz: Profissional, prestativo, persuasivo, mas não insistente. Seja conciso.`
 
+function getAgentPrompt(agenteAtivo) {
+  const slug = agenteAtivo === 'Alexandre' ? 'alexandre' : 'antonio'
+  try {
+    const record = $app.findFirstRecordByFilter('agentes_config', `slug = '${slug}' && ativo = true`)
+    const prompt = record.getString('system_prompt')
+    if (prompt) return prompt
+  } catch (_) {}
+  return agenteAtivo === 'Alexandre' ? ALEXANDRE_PROMPT : ANTONIO_PROMPT
+}
+
+function isAgentGloballyActive(agenteAtivo) {
+  const slug = agenteAtivo === 'Alexandre' ? 'alexandre' : 'antonio'
+  try {
+    $app.findFirstRecordByFilter('agentes_config', `slug = '${slug}' && ativo = true`)
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
 function callClaudeAgent(agenteAtivo, clienteId, currentMessage) {
   const ANTHROPIC_API_KEY = $os.getenv('ANTHROPIC_API_KEY')
   if (!ANTHROPIC_API_KEY) {
-    $app.logger().error('ANTHROPIC_API_KEY not configured in PocketBase secrets')
+    $app.logger().error('ANTHROPIC_API_KEY not configured as Railway env var')
     return 'Olá! No momento estou passando por uma atualização. Por favor, tente novamente em alguns instantes.'
   }
 
@@ -86,7 +106,7 @@ function callClaudeAgent(agenteAtivo, clienteId, currentMessage) {
     messages.push({ role: 'user', content: currentMessage })
   }
 
-  const systemPrompt = agenteAtivo === 'Alexandre' ? ALEXANDRE_PROMPT : ANTONIO_PROMPT
+  const systemPrompt = getAgentPrompt(agenteAtivo)
 
   let response
   try {
@@ -233,6 +253,10 @@ routerAdd('POST', '/backend/v1/zapi-webhook', (e) => {
   if (agenteAtivo === 'Manual') {
     $app.logger().info('Agent is Manual, skipping AI.')
     return e.json(200, { status: 'manual mode' })
+  }
+  if (!isAgentGloballyActive(agenteAtivo)) {
+    $app.logger().info('Agent is globally disabled, skipping AI.', 'agent', agenteAtivo)
+    return e.json(200, { status: 'agent disabled' })
   }
 
   // Find date of last AI message to gather all recent incoming messages

@@ -15,15 +15,14 @@ RUN LATEST=$(curl -fsSL -o /dev/null -w "%{url_effective}" \
 COPY pocketbase/hooks /pb/pb_hooks
 COPY pocketbase/migrations /pb/pb_migrations
 
+# WORKDIR garante que pb_hooks e pb_migrations sejam encontrados pelo PocketBase
+WORKDIR /pb
+
 EXPOSE 8090
 
 CMD ["/bin/sh", "-c", "\
   if [ -n \"$ADMIN_EMAIL\" ] && [ -n \"$ADMIN_PASSWORD\" ]; then \
-    /pb/pocketbase superuser create \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\" 2>/dev/null || \
-    /pb/pocketbase superuser update \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\" 2>/dev/null || true; \
+    ./pocketbase superuser create \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\" 2>/dev/null || \
+    ./pocketbase superuser update \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\" 2>/dev/null || true; \
   fi; \
-  exec /pb/pocketbase serve \
-    --http=0.0.0.0:${PORT:-8090} \
-    --dir=/pb/pb_data \
-    --hooksDir=/pb/pb_hooks \
-    --migrationsDir=/pb/pb_migrations"]
+  exec ./pocketbase serve --http=0.0.0.0:${PORT:-8090} --dir=./pb_data"]

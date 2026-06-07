@@ -148,7 +148,7 @@ routerAdd('POST', '/backend/v1/zapi-webhook', (e) => {
   }
 
   const rawPhone = body.phone
-  let text = typeof body.text === 'string' ? body.text : body.text?.message
+  let text = typeof body.text === 'string' ? body.text : (body.text && body.text.message)
   const messageId = body.messageId
   const senderName = body.senderName || 'Desconhecido'
 

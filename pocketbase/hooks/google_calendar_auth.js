@@ -47,7 +47,7 @@ routerAdd(
       return e.badRequestError('No access token returned')
     }
 
-    const userId = e.auth?.id
+    const userId = e.auth && e.auth.id
     if (!userId) {
       return e.unauthorizedError('Authentication required')
     }

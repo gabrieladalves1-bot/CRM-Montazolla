@@ -54,8 +54,8 @@ cronAdd('sync_google_calendar', '*/15 * * * *', () => {
           const googleEventId = event.id
           if (!googleEventId) continue
 
-          const start = event.start?.dateTime || event.start?.date
-          const end = event.end?.dateTime || event.end?.date
+          const start = (event.start && event.start.dateTime) || (event.start && event.start.date)
+          const end = (event.end && event.end.dateTime) || (event.end && event.end.date)
           if (!start) continue
 
           const startDt = new Date(start)

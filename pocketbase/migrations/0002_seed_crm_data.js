@@ -1,6 +1,6 @@
 migrate(
   (app) => {
-    const users = app.findCollectionByNameOrId('_pb_users_auth_')
+    const users = app.dao().findCollectionByNameOrId('_pb_users_auth_')
     let user
     try {
       user = app.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
@@ -10,10 +10,10 @@ migrate(
       user.setPassword('Skip@Pass')
       user.setVerified(true)
       user.set('name', 'Admin')
-      app.save(user)
+      app.dao().saveRecord(user)
     }
 
-    const clientes = app.findCollectionByNameOrId('clientes')
+    const clientes = app.dao().findCollectionByNameOrId('clientes')
     const seedClients = [
       {
         nome: 'Ana Silva',
@@ -60,13 +60,13 @@ migrate(
         record.set('telefone', c.telefone)
         record.set('email', c.email)
         record.set('data_contato', new Date().toISOString())
-        app.save(record)
+        app.dao().saveRecord(record)
         if (c.nome === 'Ana Silva') anaRecord = record
       }
     }
 
     if (anaRecord) {
-      const historico = app.findCollectionByNameOrId('historico_contatos')
+      const historico = app.dao().findCollectionByNameOrId('historico_contatos')
       try {
         app.findFirstRecordByFilter('historico_contatos', "cliente_id = '" + anaRecord.id + "'")
       } catch (_) {
@@ -75,10 +75,10 @@ migrate(
         hRecord.set('tipo_contato', 'WhatsApp')
         hRecord.set('descricao', 'Primeiro contato realizado para apresentar nossos serviços.')
         hRecord.set('data_contato', new Date().toISOString())
-        app.save(hRecord)
+        app.dao().saveRecord(hRecord)
       }
 
-      const anotacoes = app.findCollectionByNameOrId('anotacoes_cliente')
+      const anotacoes = app.dao().findCollectionByNameOrId('anotacoes_cliente')
       try {
         app.findFirstRecordByFilter('anotacoes_cliente', "cliente_id = '" + anaRecord.id + "'")
       } catch (_) {
@@ -88,14 +88,14 @@ migrate(
           'conteudo',
           '<p>Cliente tem muito interesse nos serviços. Sugeriu retorno na próxima semana.</p>',
         )
-        app.save(aRecord)
+        app.dao().saveRecord(aRecord)
       }
     }
   },
   (app) => {
     try {
       const user = app.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
-      app.delete(user)
+      app.dao().deleteRecord(user)
     } catch (_) {}
   },
 )

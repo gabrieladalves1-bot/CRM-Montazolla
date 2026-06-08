@@ -22,7 +22,7 @@ migrate(
         { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
       ],
     })
-    app.save(pastas)
+    app.dao().saveCollection(pastas)
 
     const documentos = new Collection({
       name: 'documentos',
@@ -55,7 +55,7 @@ migrate(
         { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
       ],
     })
-    app.save(documentos)
+    app.dao().saveCollection(documentos)
 
     // Seed Data
     try {
@@ -63,17 +63,17 @@ migrate(
       const pastaRecord = new Record(pastas)
       pastaRecord.set('user_id', user.id)
       pastaRecord.set('nome', 'Documentos Gerais')
-      app.save(pastaRecord)
+      app.dao().saveRecord(pastaRecord)
     } catch (_) {}
   },
   (app) => {
     try {
-      const docs = app.findCollectionByNameOrId('documentos')
-      app.delete(docs)
+      const docs = app.dao().findCollectionByNameOrId('documentos')
+      app.dao().deleteCollection(docs)
     } catch (_) {}
     try {
-      const pastas = app.findCollectionByNameOrId('pastas_documentos')
-      app.delete(pastas)
+      const pastas = app.dao().findCollectionByNameOrId('pastas_documentos')
+      app.dao().deleteCollection(pastas)
     } catch (_) {}
   },
 )

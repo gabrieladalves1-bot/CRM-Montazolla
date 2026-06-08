@@ -1,6 +1,6 @@
 migrate(
   (app) => {
-    const col = app.findCollectionByNameOrId('clientes')
+    const col = app.dao().findCollectionByNameOrId('clientes')
 
     if (!col.fields.getByName('endereco')) {
       col.fields.add(new TextField({ name: 'endereco' }))
@@ -21,10 +21,10 @@ migrate(
       col.fields.add(new NumberField({ name: 'total_avaliacoes', onlyInt: true }))
     }
 
-    app.save(col)
+    app.dao().saveCollection(col)
   },
   (app) => {
-    const col = app.findCollectionByNameOrId('clientes')
+    const col = app.dao().findCollectionByNameOrId('clientes')
 
     col.fields.removeByName('endereco')
     col.fields.removeByName('site')
@@ -33,6 +33,6 @@ migrate(
     col.fields.removeByName('avaliacao')
     col.fields.removeByName('total_avaliacoes')
 
-    app.save(col)
+    app.dao().saveCollection(col)
   },
 )

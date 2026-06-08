@@ -7,7 +7,7 @@ migrate(
       const cleaned = raw.replace(/\D/g, '')
       if (raw !== cleaned) {
         client.set('telefone', cleaned)
-        app.saveNoValidate(client)
+        app.dao().saveRecord(client)
       }
     }
 
@@ -33,7 +33,7 @@ migrate(
         )
         for (const h of history) {
           h.set('cliente_id', keeper.id)
-          app.saveNoValidate(h)
+          app.dao().saveRecord(h)
         }
 
         // Move notes
@@ -46,7 +46,7 @@ migrate(
         )
         for (const n of notes) {
           n.set('cliente_id', keeper.id)
-          app.saveNoValidate(n)
+          app.dao().saveRecord(n)
         }
 
         // Move meetings
@@ -59,7 +59,7 @@ migrate(
         )
         for (const m of meetings) {
           m.set('cliente_id', keeper.id)
-          app.saveNoValidate(m)
+          app.dao().saveRecord(m)
         }
 
         // Merge data
@@ -73,8 +73,8 @@ migrate(
           keeper.set('instagram_usuario', client.getString('instagram_usuario'))
         }
 
-        app.saveNoValidate(keeper)
-        app.delete(client)
+        app.dao().saveRecord(keeper)
+        app.dao().deleteRecord(client)
       }
     }
   },

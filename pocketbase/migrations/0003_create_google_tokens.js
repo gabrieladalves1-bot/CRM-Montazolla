@@ -25,10 +25,10 @@ migrate(
       ],
       indexes: ['CREATE UNIQUE INDEX idx_google_tokens_user ON google_calendar_tokens (user_id)'],
     })
-    app.save(collection)
+    app.dao().saveCollection(collection)
   },
   (app) => {
-    const collection = app.findCollectionByNameOrId('google_calendar_tokens')
-    app.delete(collection)
+    const collection = app.dao().findCollectionByNameOrId('google_calendar_tokens')
+    app.dao().deleteCollection(collection)
   },
 )

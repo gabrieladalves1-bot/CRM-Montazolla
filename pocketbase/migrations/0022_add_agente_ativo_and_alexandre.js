@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate(
   (app) => {
-    const clientes = app.findCollectionByNameOrId('clientes')
+    const clientes = app.dao().findCollectionByNameOrId('clientes')
     if (!clientes.fields.getByName('agente_ativo')) {
       clientes.fields.add(
         new SelectField({
@@ -10,7 +10,7 @@ migrate(
           maxSelect: 1,
         }),
       )
-      app.save(clientes)
+      app.dao().saveCollection(clientes)
     }
 
     app

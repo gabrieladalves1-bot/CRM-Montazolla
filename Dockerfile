@@ -5,7 +5,7 @@ ARG PB_VERSION=0.22.46
 
 RUN apk add --no-cache ca-certificates unzip curl
 
-RUN curl -fsSL \
+RUN curl -fsSL --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 120 \
       "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip" \
       -o /tmp/pb.zip \
     && unzip -o /tmp/pb.zip -d /pb \

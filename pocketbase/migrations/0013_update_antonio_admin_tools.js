@@ -1,7 +1,9 @@
-/// <reference path="../pb_data/types.d.ts" />
+﻿/// <reference path="../pb_data/types.d.ts" />
 migrate(
-  (app) => {
+  (db) => {
+    const dao = new Dao(db)
     // Agent tools update removed — agents use Claude API via pocketbase/hooks/zapi_webhook.js
   },
-  (app) => {},
+  (db) => {
+    const dao = new Dao(db)},
 )

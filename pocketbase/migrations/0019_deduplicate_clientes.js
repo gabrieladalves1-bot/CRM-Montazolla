@@ -1,18 +1,19 @@
-migrate(
-  (app) => {
+﻿migrate(
+  (db) => {
+    const dao = new Dao(db)
     // Normalize all existing phone numbers first
-    const clients = $app.findRecordsByFilter('clientes', "telefone != ''", '', 0, 0)
+    const clients = dao.findRecordsByFilter('clientes', "telefone != ''", '', 0, 0)
     for (const client of clients) {
       const raw = client.getString('telefone')
       const cleaned = raw.replace(/\D/g, '')
       if (raw !== cleaned) {
         client.set('telefone', cleaned)
-        $app.dao().saveRecord(client)
+        dao.saveRecord(client)
       }
     }
 
     // Deduplicate by phone and user_id
-    const allClients = $app.findRecordsByFilter('clientes', "telefone != ''", 'created', 0, 0)
+    const allClients = dao.findRecordsByFilter('clientes', "telefone != ''", 'created', 0, 0)
 
     const keepMap = {} // { "user_id_phone": clientRecord }
 
@@ -24,7 +25,7 @@ migrate(
         const keeper = keepMap[key]
 
         // Move history
-        const history = $app.findRecordsByFilter(
+        const history = dao.findRecordsByFilter(
           'historico_contatos',
           `cliente_id = '${client.id}'`,
           '',
@@ -33,11 +34,11 @@ migrate(
         )
         for (const h of history) {
           h.set('cliente_id', keeper.id)
-          $app.dao().saveRecord(h)
+          dao.saveRecord(h)
         }
 
         // Move notes
-        const notes = $app.findRecordsByFilter(
+        const notes = dao.findRecordsByFilter(
           'anotacoes_cliente',
           `cliente_id = '${client.id}'`,
           '',
@@ -46,11 +47,11 @@ migrate(
         )
         for (const n of notes) {
           n.set('cliente_id', keeper.id)
-          $app.dao().saveRecord(n)
+          dao.saveRecord(n)
         }
 
         // Move meetings
-        const meetings = $app.findRecordsByFilter(
+        const meetings = dao.findRecordsByFilter(
           'reunioes',
           `cliente_id = '${client.id}'`,
           '',
@@ -59,7 +60,7 @@ migrate(
         )
         for (const m of meetings) {
           m.set('cliente_id', keeper.id)
-          $app.dao().saveRecord(m)
+          dao.saveRecord(m)
         }
 
         // Merge data
@@ -73,12 +74,13 @@ migrate(
           keeper.set('instagram_usuario', client.getString('instagram_usuario'))
         }
 
-        $app.dao().saveRecord(keeper)
-        $app.dao().deleteRecord(client)
+        dao.saveRecord(keeper)
+        dao.deleteRecord(client)
       }
     }
   },
-  (app) => {
+  (db) => {
+    const dao = new Dao(db)
     // Can't automatically reverse deduplication
   },
 )

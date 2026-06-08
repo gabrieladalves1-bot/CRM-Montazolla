@@ -1,5 +1,6 @@
-migrate(
-  (app) => {
+﻿migrate(
+  (db) => {
+    const dao = new Dao(db)
     const collection = new Collection({
       name: 'google_calendar_tokens',
       type: 'base',
@@ -25,10 +26,11 @@ migrate(
       ],
       indexes: ['CREATE UNIQUE INDEX idx_google_tokens_user ON google_calendar_tokens (user_id)'],
     })
-    $app.dao().saveCollection(collection)
+    dao.saveCollection(collection)
   },
-  (app) => {
-    const collection = $app.dao().findCollectionByNameOrId('google_calendar_tokens')
-    $app.dao().deleteCollection(collection)
+  (db) => {
+    const dao = new Dao(db)
+    const collection = dao.findCollectionByNameOrId('google_calendar_tokens')
+    dao.deleteCollection(collection)
   },
 )

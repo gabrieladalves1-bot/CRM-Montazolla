@@ -1,5 +1,6 @@
-migrate(
-  (app) => {
+﻿migrate(
+  (db) => {
+    const dao = new Dao(db)
     const pastas = new Collection({
       name: 'pastas_documentos',
       type: 'base',
@@ -22,7 +23,7 @@ migrate(
         { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
       ],
     })
-    $app.dao().saveCollection(pastas)
+    dao.saveCollection(pastas)
 
     const documentos = new Collection({
       name: 'documentos',
@@ -55,25 +56,26 @@ migrate(
         { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
       ],
     })
-    $app.dao().saveCollection(documentos)
+    dao.saveCollection(documentos)
 
     // Seed Data
     try {
-      const user = $app.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
+      const user = dao.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
       const pastaRecord = new Record(pastas)
       pastaRecord.set('user_id', user.id)
       pastaRecord.set('nome', 'Documentos Gerais')
-      $app.dao().saveRecord(pastaRecord)
+      dao.saveRecord(pastaRecord)
     } catch (_) {}
   },
-  (app) => {
+  (db) => {
+    const dao = new Dao(db)
     try {
-      const docs = $app.dao().findCollectionByNameOrId('documentos')
-      $app.dao().deleteCollection(docs)
+      const docs = dao.findCollectionByNameOrId('documentos')
+      dao.deleteCollection(docs)
     } catch (_) {}
     try {
-      const pastas = $app.dao().findCollectionByNameOrId('pastas_documentos')
-      $app.dao().deleteCollection(pastas)
+      const pastas = dao.findCollectionByNameOrId('pastas_documentos')
+      dao.deleteCollection(pastas)
     } catch (_) {}
   },
 )

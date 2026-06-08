@@ -1,6 +1,7 @@
-migrate(
-  (app) => {
-    const col = $app.dao().findCollectionByNameOrId('historico_contatos')
+﻿migrate(
+  (db) => {
+    const dao = new Dao(db)
+    const col = dao.findCollectionByNameOrId('historico_contatos')
     col.fields.add(
       new SelectField({
         name: 'tipo_contato',
@@ -15,10 +16,11 @@ migrate(
         required: false,
       }),
     )
-    $app.dao().saveCollection(col)
+    dao.saveCollection(col)
   },
-  (app) => {
-    const col = $app.dao().findCollectionByNameOrId('historico_contatos')
+  (db) => {
+    const dao = new Dao(db)
+    const col = dao.findCollectionByNameOrId('historico_contatos')
     col.fields.add(
       new SelectField({
         name: 'tipo_contato',
@@ -26,6 +28,6 @@ migrate(
         required: false,
       }),
     )
-    $app.dao().saveCollection(col)
+    dao.saveCollection(col)
   },
 )

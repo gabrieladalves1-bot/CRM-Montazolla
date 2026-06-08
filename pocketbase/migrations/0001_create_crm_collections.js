@@ -1,6 +1,7 @@
-migrate(
-  (app) => {
-    const users = $app.dao().findCollectionByNameOrId('_pb_users_auth_')
+﻿migrate(
+  (db) => {
+    const dao = new Dao(db)
+    const users = dao.findCollectionByNameOrId('_pb_users_auth_')
 
     const clientes = new Collection({
       name: 'clientes',
@@ -58,7 +59,7 @@ migrate(
         'CREATE INDEX idx_clientes_nome ON clientes (nome)',
       ],
     })
-    $app.dao().saveCollection(clientes)
+    dao.saveCollection(clientes)
 
     const anotacoes = new Collection({
       name: 'anotacoes_cliente',
@@ -83,7 +84,7 @@ migrate(
       ],
       indexes: ['CREATE INDEX idx_anotacoes_cliente_id ON anotacoes_cliente (cliente_id)'],
     })
-    $app.dao().saveCollection(anotacoes)
+    dao.saveCollection(anotacoes)
 
     const historico = new Collection({
       name: 'historico_contatos',
@@ -115,17 +116,18 @@ migrate(
       ],
       indexes: ['CREATE INDEX idx_historico_cliente_id ON historico_contatos (cliente_id)'],
     })
-    $app.dao().saveCollection(historico)
+    dao.saveCollection(historico)
   },
-  (app) => {
+  (db) => {
+    const dao = new Dao(db)
     try {
-      $app.dao().deleteCollection($app.dao().findCollectionByNameOrId('historico_contatos'))
+      dao.deleteCollection(dao.findCollectionByNameOrId('historico_contatos'))
     } catch (_) {}
     try {
-      $app.dao().deleteCollection($app.dao().findCollectionByNameOrId('anotacoes_cliente'))
+      dao.deleteCollection(dao.findCollectionByNameOrId('anotacoes_cliente'))
     } catch (_) {}
     try {
-      $app.dao().deleteCollection($app.dao().findCollectionByNameOrId('clientes'))
+      dao.deleteCollection(dao.findCollectionByNameOrId('clientes'))
     } catch (_) {}
   },
 )

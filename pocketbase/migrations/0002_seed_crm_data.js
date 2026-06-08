@@ -1,19 +1,20 @@
-migrate(
-  (app) => {
-    const users = $app.dao().findCollectionByNameOrId('_pb_users_auth_')
+﻿migrate(
+  (db) => {
+    const dao = new Dao(db)
+    const users = dao.findCollectionByNameOrId('_pb_users_auth_')
     let user
     try {
-      user = $app.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
+      user = dao.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
     } catch (_) {
       user = new Record(users)
       user.setEmail('gabriel.adalves1@gmail.com')
       user.setPassword('Skip@Pass')
       user.setVerified(true)
       user.set('name', 'Admin')
-      $app.dao().saveRecord(user)
+      dao.saveRecord(user)
     }
 
-    const clientes = $app.dao().findCollectionByNameOrId('clientes')
+    const clientes = dao.findCollectionByNameOrId('clientes')
     const seedClients = [
       {
         nome: 'Ana Silva',
@@ -45,7 +46,7 @@ migrate(
 
     for (const c of seedClients) {
       try {
-        const existing = $app.findFirstRecordByFilter(
+        const existing = dao.findFirstRecordByFilter(
           'clientes',
           "nome = '" + c.nome + "' && user_id = '" + user.id + "'",
         )
@@ -60,27 +61,27 @@ migrate(
         record.set('telefone', c.telefone)
         record.set('email', c.email)
         record.set('data_contato', new Date().toISOString())
-        $app.dao().saveRecord(record)
+        dao.saveRecord(record)
         if (c.nome === 'Ana Silva') anaRecord = record
       }
     }
 
     if (anaRecord) {
-      const historico = $app.dao().findCollectionByNameOrId('historico_contatos')
+      const historico = dao.findCollectionByNameOrId('historico_contatos')
       try {
-        $app.findFirstRecordByFilter('historico_contatos', "cliente_id = '" + anaRecord.id + "'")
+        dao.findFirstRecordByFilter('historico_contatos', "cliente_id = '" + anaRecord.id + "'")
       } catch (_) {
         const hRecord = new Record(historico)
         hRecord.set('cliente_id', anaRecord.id)
         hRecord.set('tipo_contato', 'WhatsApp')
         hRecord.set('descricao', 'Primeiro contato realizado para apresentar nossos serviços.')
         hRecord.set('data_contato', new Date().toISOString())
-        $app.dao().saveRecord(hRecord)
+        dao.saveRecord(hRecord)
       }
 
-      const anotacoes = $app.dao().findCollectionByNameOrId('anotacoes_cliente')
+      const anotacoes = dao.findCollectionByNameOrId('anotacoes_cliente')
       try {
-        $app.findFirstRecordByFilter('anotacoes_cliente', "cliente_id = '" + anaRecord.id + "'")
+        dao.findFirstRecordByFilter('anotacoes_cliente', "cliente_id = '" + anaRecord.id + "'")
       } catch (_) {
         const aRecord = new Record(anotacoes)
         aRecord.set('cliente_id', anaRecord.id)
@@ -88,14 +89,15 @@ migrate(
           'conteudo',
           '<p>Cliente tem muito interesse nos serviços. Sugeriu retorno na próxima semana.</p>',
         )
-        $app.dao().saveRecord(aRecord)
+        dao.saveRecord(aRecord)
       }
     }
   },
-  (app) => {
+  (db) => {
+    const dao = new Dao(db)
     try {
-      const user = $app.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
-      $app.dao().deleteRecord(user)
+      const user = dao.findAuthRecordByEmail('_pb_users_auth_', 'gabriel.adalves1@gmail.com')
+      dao.deleteRecord(user)
     } catch (_) {}
   },
 )

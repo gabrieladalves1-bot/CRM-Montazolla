@@ -1,9 +1,10 @@
-/// <reference path="../pb_data/types.d.ts" />
+﻿/// <reference path="../pb_data/types.d.ts" />
 migrate(
-  (app) => {
+  (db) => {
+    const dao = new Dao(db)
     // Cria a collection agentes_config
     try {
-      $app.dao().findCollectionByNameOrId('agentes_config')
+      dao.findCollectionByNameOrId('agentes_config')
       return // já existe
     } catch (_) {}
 
@@ -20,7 +21,7 @@ migrate(
     col.fields.add(new TextField({ name: 'nome', required: true }))
     col.fields.add(new TextField({ name: 'system_prompt', max: 10000 }))
     col.fields.add(new BoolField({ name: 'ativo' }))
-    $app.dao().saveCollection(col)
+    dao.saveCollection(col)
 
     const antonioPrompt = `Você é o Antônio, consultor de vendas especializado da Montazolla, focado em fechar projetos de criação de sites via WhatsApp. Seu tom deve ser altamente persuasivo e direto ao ponto, sem nenhuma enrolação ou informações desnecessárias.
 
@@ -60,19 +61,20 @@ Tom de voz: Profissional, prestativo, persuasivo, mas não insistente. Seja conc
     antonio.set('nome', 'Antônio')
     antonio.set('system_prompt', antonioPrompt)
     antonio.set('ativo', true)
-    $app.dao().saveRecord(antonio)
+    dao.saveRecord(antonio)
 
     const alexandre = new Record(col)
     alexandre.set('slug', 'alexandre')
     alexandre.set('nome', 'Alexandre')
     alexandre.set('system_prompt', alexandrePrompt)
     alexandre.set('ativo', true)
-    $app.dao().saveRecord(alexandre)
+    dao.saveRecord(alexandre)
   },
-  (app) => {
+  (db) => {
+    const dao = new Dao(db)
     try {
-      const col = $app.dao().findCollectionByNameOrId('agentes_config')
-      $app.dao().deleteCollection(col)
+      const col = dao.findCollectionByNameOrId('agentes_config')
+      dao.deleteCollection(col)
     } catch (_) {}
   },
 )

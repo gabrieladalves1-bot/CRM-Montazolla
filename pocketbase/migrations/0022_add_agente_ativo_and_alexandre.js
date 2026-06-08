@@ -1,7 +1,8 @@
-/// <reference path="../pb_data/types.d.ts" />
+﻿/// <reference path="../pb_data/types.d.ts" />
 migrate(
-  (app) => {
-    const clientes = $app.dao().findCollectionByNameOrId('clientes')
+  (db) => {
+    const dao = new Dao(db)
+    const clientes = dao.findCollectionByNameOrId('clientes')
     if (!clientes.fields.getByName('agente_ativo')) {
       clientes.fields.add(
         new SelectField({
@@ -10,7 +11,7 @@ migrate(
           maxSelect: 1,
         }),
       )
-      $app.dao().saveCollection(clientes)
+      dao.saveCollection(clientes)
     }
 
     app
@@ -22,5 +23,6 @@ migrate(
 
     // Agent definitions removed — agents use Claude API via pocketbase/hooks/zapi_webhook.js
   },
-  (app) => {},
+  (db) => {
+    const dao = new Dao(db)},
 )

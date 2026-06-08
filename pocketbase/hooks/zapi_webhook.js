@@ -316,12 +316,9 @@ routerAdd('POST', '/backend/v1/zapi-webhook', (e) => {
     return e.json(500, { error: 'AI agent failed' })
   }
 
-  const instanceId = $os.getenv('WA_INSTANCE_ID') || '3F410457AB25812690089A7EE4F1867E'
-  const token = $os.getenv('WA_TOKEN') || '556AE67289E74FD28A396530'
-  const clientToken =
-    $os.getenv('ZAPI_CLIENT_TOKEN') ||
-    $os.getenv('WA_CLIENT_TOKEN') ||
-    'F6e10c7524601499e9a6591ecf0c56ca1S'
+  const instanceId = $os.getenv('WA_INSTANCE_ID')
+  const token = $os.getenv('WA_TOKEN')
+  const clientToken = $os.getenv('ZAPI_CLIENT_TOKEN') || $os.getenv('WA_CLIENT_TOKEN')
 
   if (instanceId && token) {
     try {

@@ -12,11 +12,14 @@ RUN curl -fsSL --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 120 \
     && rm /tmp/pb.zip \
     && chmod +x /pb/pocketbase
 
-COPY pocketbase/hooks /pb/pb_hooks
-COPY pocketbase/migrations /pb/pb_migrations
+# Copy hooks and migrations OUTSIDE /pb to avoid Railway volume conflicts
+COPY pocketbase/hooks /app/hooks
+COPY pocketbase/migrations /app/migrations
+COPY docker-entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 WORKDIR /pb
 
 EXPOSE 8090
 
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data/fresh", "--hooksDir=/pb/pb_hooks", "--migrationsDir=/pb/pb_migrations"]
+CMD ["/app/entrypoint.sh"]

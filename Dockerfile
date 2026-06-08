@@ -15,7 +15,7 @@ RUN curl -fsSL --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 120 \
 COPY pocketbase/hooks /pb/pb_hooks
 COPY pocketbase/migrations /pb/pb_migrations
 COPY start.sh /pb/start.sh
-RUN chmod +x /pb/start.sh
+RUN sed -i 's/\r//' /pb/start.sh && chmod +x /pb/start.sh
 
 WORKDIR /pb
 

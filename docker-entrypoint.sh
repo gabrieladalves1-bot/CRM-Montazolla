@@ -1,15 +1,11 @@
 #!/bin/sh
 set -e
 
-mkdir -p /pb/pb_data/fresh/pb_hooks
-mkdir -p /pb/pb_data/fresh/pb_migrations
+echo "[debug] PocketBase: $(/pb/pocketbase --version 2>&1 | head -1)"
+echo "[debug] /pb/pb_hooks: $(ls /pb/pb_hooks 2>&1)"
+echo "[debug] /pb/pb_data: $(ls /pb/pb_data 2>&1 | head -5)"
 
-# Volume persists between deploys — always wipe hooks dir before copying
-rm -f /pb/pb_data/fresh/pb_hooks/*.js
+mkdir -p /pb/pb_data/fresh
 
-cp /pb/pb_hooks/_test_route.js /pb/pb_data/fresh/pb_hooks/
-
-echo "[init] hooks: $(ls /pb/pb_data/fresh/pb_hooks | wc -l) files (TEST MODE - only _test_route.js)"
-echo "[init] starting pocketbase..."
-
-exec /pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data/fresh
+echo "[init] starting pocketbase --hooksDir=/pb/pb_hooks ..."
+exec /pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data/fresh --hooksDir=/pb/pb_hooks

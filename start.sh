@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DB_FILE="/pb/pb_data/pb.db"
+DB_FILE="/pb/pb_data/data.db"
 MIGRATION="1673167670_multi_match_migrate.go"
 
 echo "=== CRM Startup Script ==="

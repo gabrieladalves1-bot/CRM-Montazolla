@@ -18,3 +18,5 @@ COPY pocketbase/migrations /pb/pb_migrations
 WORKDIR /pb
 
 EXPOSE 8090
+
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--hooksDir=/pb/pb_hooks", "--migrationsDir=/pb/pb_migrations"]

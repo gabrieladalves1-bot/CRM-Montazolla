@@ -11,6 +11,7 @@
       user.setPassword('Skip@Pass')
       user.setVerified(true)
       user.set('name', 'Admin')
+      user.set('username', 'gabriel')
       dao.saveRecord(user)
     }
 

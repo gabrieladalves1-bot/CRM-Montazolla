@@ -12,6 +12,6 @@ echo "=========================="
 
 exec /pb/pocketbase serve \
   --http=0.0.0.0:8090 \
-  --dir=/pb/pb_data \
+  --dir=/pb/pb_data/fresh \
   --hooksDir=/app/hooks \
   --migrationsDir=/app/migrations

@@ -1,6 +1,5 @@
 FROM alpine:3.20
 
-# Fixado em v0.22.46 — compatível com nossos hooks (API v0.22)
 ARG PB_VERSION=0.22.46
 
 RUN apk add --no-cache ca-certificates unzip curl sqlite
@@ -12,12 +11,13 @@ RUN curl -fsSL --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 120 \
     && rm /tmp/pb.zip \
     && chmod +x /pb/pocketbase
 
-# Volume is mounted at /pb/pb_data — hooks and migrations are outside the volume
 COPY pocketbase/hooks /pb/pb_hooks
 COPY pocketbase/migrations /pb/pb_migrations
+COPY docker-entrypoint.sh /pb/init.sh
+RUN chmod +x /pb/init.sh
 
 WORKDIR /pb
 
 EXPOSE 8090
 
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data/fresh", "--hooksDir=/pb/pb_hooks", "--migrationsDir=/pb/pb_migrations"]
+CMD ["/pb/init.sh"]

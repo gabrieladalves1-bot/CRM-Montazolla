@@ -1,17 +1,13 @@
 #!/bin/sh
 set -e
 
-echo "=== PocketBase Startup ==="
-echo "Hooks dir contents (/app/hooks):"
-ls -la /app/hooks || echo "ERROR: /app/hooks not found!"
-echo "Migrations dir contents (/app/migrations):"
-ls -la /app/migrations || echo "ERROR: /app/migrations not found!"
-echo "PocketBase binary:"
-ls -la /pb/pocketbase || echo "ERROR: pocketbase binary not found!"
-echo "=========================="
+# Copy hooks from Docker image into the data dir where PocketBase looks by default
+mkdir -p /pb/pb_data/fresh/pb_hooks
+mkdir -p /pb/pb_data/fresh/pb_migrations
+cp /pb/pb_hooks/*.js /pb/pb_data/fresh/pb_hooks/
+cp /pb/pb_migrations/*.js /pb/pb_data/fresh/pb_migrations/
 
-exec /pb/pocketbase serve \
-  --http=0.0.0.0:8090 \
-  --dir=/pb/pb_data/fresh \
-  --hooksDir=/app/hooks \
-  --migrationsDir=/app/migrations
+echo "[init] hooks: $(ls /pb/pb_data/fresh/pb_hooks | wc -l) files"
+echo "[init] starting pocketbase..."
+
+exec /pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data/fresh

@@ -19,4 +19,4 @@ WORKDIR /pb
 
 EXPOSE 8090
 
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--hooksDir=/pb/pb_hooks", "--migrationsDir=/pb/pb_migrations"]
+CMD ["/pb/pocketbase", "--hooksDir=/pb/pb_hooks", "--migrationsDir=/pb/pb_migrations", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data"]

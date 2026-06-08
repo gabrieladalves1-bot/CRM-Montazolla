@@ -1,28 +1,9 @@
-﻿/// <reference path="../pb_data/types.d.ts" />
 migrate(
   (db) => {
-    const dao = new Dao(db)
-    const clientes = dao.findCollectionByNameOrId('clientes')
-    if (!clientes.fields.getByName('agente_ativo')) {
-      clientes.fields.add(
-        new SelectField({
-          name: 'agente_ativo',
-          values: ['Antônio', 'Alexandre', 'Manual'],
-          maxSelect: 1,
-        }),
-      )
-      dao.saveCollection(clientes)
-    }
-
-    app
-      .db()
-      .newQuery(
-        `UPDATE clientes SET agente_ativo = 'Antônio' WHERE agente_ativo IS NULL OR agente_ativo = ''`,
-      )
-      .execute()
-
-    // Agent definitions removed — agents use Claude API via pocketbase/hooks/zapi_webhook.js
+    /* agente_ativo already added to clientes in 0001 */
+    try {
+      db.newQuery("UPDATE clientes SET agente_ativo = 'Antônio' WHERE agente_ativo IS NULL OR agente_ativo = ''").execute()
+    } catch (_) {}
   },
-  (db) => {
-    const dao = new Dao(db)},
+  (db) => {},
 )

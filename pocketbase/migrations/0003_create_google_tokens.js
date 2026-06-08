@@ -1,4 +1,4 @@
-﻿migrate(
+migrate(
   (db) => {
     const dao = new Dao(db)
     const collection = new Collection({
@@ -9,20 +9,11 @@
       createRule: "@request.auth.id != '' && user_id = @request.auth.id",
       updateRule: "@request.auth.id != '' && user_id = @request.auth.id",
       deleteRule: "@request.auth.id != '' && user_id = @request.auth.id",
-      fields: [
-        {
-          name: 'user_id',
-          type: 'relation',
-          required: true,
-          collectionId: '_pb_users_auth_',
-          cascadeDelete: true,
-          maxSelect: 1,
-        },
-        { name: 'access_token', type: 'text', required: true },
-        { name: 'refresh_token', type: 'text', required: false },
-        { name: 'expires_at', type: 'date', required: true },
-        { name: 'created', type: 'autodate', onCreate: true, onUpdate: false },
-        { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
+      schema: [
+        new SchemaField({ name: 'user_id', type: 'relation', required: true, options: { collectionId: '_pb_users_auth_', cascadeDelete: true, maxSelect: 1 } }),
+        new SchemaField({ name: 'access_token', type: 'text', required: true }),
+        new SchemaField({ name: 'refresh_token', type: 'text' }),
+        new SchemaField({ name: 'expires_at', type: 'date', required: true }),
       ],
       indexes: ['CREATE UNIQUE INDEX idx_google_tokens_user ON google_calendar_tokens (user_id)'],
     })
@@ -30,7 +21,6 @@
   },
   (db) => {
     const dao = new Dao(db)
-    const collection = dao.findCollectionByNameOrId('google_calendar_tokens')
-    dao.deleteCollection(collection)
+    try { dao.deleteCollection(dao.findCollectionByNameOrId('google_calendar_tokens')) } catch (_) {}
   },
 )

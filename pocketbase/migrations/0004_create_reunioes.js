@@ -13,7 +13,7 @@ migrate(
           name: 'cliente_id',
           type: 'relation',
           required: true,
-          collectionId: app.dao().findCollectionByNameOrId('clientes').id,
+          collectionId: $app.dao().findCollectionByNameOrId('clientes').id,
           cascadeDelete: true,
           maxSelect: 1,
         },
@@ -46,10 +46,10 @@ migrate(
         'CREATE INDEX idx_reunioes_user ON reunioes (user_id)',
       ],
     })
-    app.dao().saveCollection(reunioes)
+    $app.dao().saveCollection(reunioes)
   },
   (app) => {
-    const reunioes = app.dao().findCollectionByNameOrId('reunioes')
-    app.dao().deleteCollection(reunioes)
+    const reunioes = $app.dao().findCollectionByNameOrId('reunioes')
+    $app.dao().deleteCollection(reunioes)
   },
 )

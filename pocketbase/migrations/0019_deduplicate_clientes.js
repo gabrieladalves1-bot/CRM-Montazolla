@@ -1,18 +1,18 @@
 migrate(
   (app) => {
     // Normalize all existing phone numbers first
-    const clients = app.findRecordsByFilter('clientes', "telefone != ''", '', 0, 0)
+    const clients = $app.findRecordsByFilter('clientes', "telefone != ''", '', 0, 0)
     for (const client of clients) {
       const raw = client.getString('telefone')
       const cleaned = raw.replace(/\D/g, '')
       if (raw !== cleaned) {
         client.set('telefone', cleaned)
-        app.dao().saveRecord(client)
+        $app.dao().saveRecord(client)
       }
     }
 
     // Deduplicate by phone and user_id
-    const allClients = app.findRecordsByFilter('clientes', "telefone != ''", 'created', 0, 0)
+    const allClients = $app.findRecordsByFilter('clientes', "telefone != ''", 'created', 0, 0)
 
     const keepMap = {} // { "user_id_phone": clientRecord }
 
@@ -24,7 +24,7 @@ migrate(
         const keeper = keepMap[key]
 
         // Move history
-        const history = app.findRecordsByFilter(
+        const history = $app.findRecordsByFilter(
           'historico_contatos',
           `cliente_id = '${client.id}'`,
           '',
@@ -33,11 +33,11 @@ migrate(
         )
         for (const h of history) {
           h.set('cliente_id', keeper.id)
-          app.dao().saveRecord(h)
+          $app.dao().saveRecord(h)
         }
 
         // Move notes
-        const notes = app.findRecordsByFilter(
+        const notes = $app.findRecordsByFilter(
           'anotacoes_cliente',
           `cliente_id = '${client.id}'`,
           '',
@@ -46,11 +46,11 @@ migrate(
         )
         for (const n of notes) {
           n.set('cliente_id', keeper.id)
-          app.dao().saveRecord(n)
+          $app.dao().saveRecord(n)
         }
 
         // Move meetings
-        const meetings = app.findRecordsByFilter(
+        const meetings = $app.findRecordsByFilter(
           'reunioes',
           `cliente_id = '${client.id}'`,
           '',
@@ -59,7 +59,7 @@ migrate(
         )
         for (const m of meetings) {
           m.set('cliente_id', keeper.id)
-          app.dao().saveRecord(m)
+          $app.dao().saveRecord(m)
         }
 
         // Merge data
@@ -73,8 +73,8 @@ migrate(
           keeper.set('instagram_usuario', client.getString('instagram_usuario'))
         }
 
-        app.dao().saveRecord(keeper)
-        app.dao().deleteRecord(client)
+        $app.dao().saveRecord(keeper)
+        $app.dao().deleteRecord(client)
       }
     }
   },

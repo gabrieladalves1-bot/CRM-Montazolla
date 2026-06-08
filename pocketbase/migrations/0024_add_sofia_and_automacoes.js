@@ -1,26 +1,26 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate(
   (app) => {
-    const col = app.dao().findCollectionByNameOrId('agentes_config')
+    const col = $app.dao().findCollectionByNameOrId('agentes_config')
 
     // Adiciona campo tipo (agente | automacao)
     if (!col.fields.getByName('tipo')) {
       col.fields.add(new SelectField({ name: 'tipo', values: ['agente', 'automacao'], maxSelect: 1 }))
-      app.dao().saveCollection(col)
+      $app.dao().saveCollection(col)
     }
 
     // Adiciona campo template_mensagem para automações
     if (!col.fields.getByName('template_mensagem')) {
       col.fields.add(new TextField({ name: 'template_mensagem', max: 2000 }))
-      app.dao().saveCollection(col)
+      $app.dao().saveCollection(col)
     }
 
     // Backfill: agentes existentes recebem tipo = 'agente'
-    app.dao().db().newQuery("UPDATE agentes_config SET tipo = 'agente' WHERE tipo IS NULL OR tipo = ''").execute()
+    $app.dao().db().newQuery("UPDATE agentes_config SET tipo = 'agente' WHERE tipo IS NULL OR tipo = ''").execute()
 
     // Sofia — Geradora de Propostas
     try {
-      app.findFirstRecordByFilter('agentes_config', "slug = 'sofia'")
+      $app.findFirstRecordByFilter('agentes_config', "slug = 'sofia'")
     } catch (_) {
       const sofia = new Record(col)
       sofia.set('slug', 'sofia')
@@ -44,12 +44,12 @@ REGRAS:
 - Não mencione preços
 - Não use asterisco duplo (**). Use *texto* para negrito (formato WhatsApp)
 - Finalize sempre convidando para uma conversa`)
-      app.dao().saveRecord(sofia)
+      $app.dao().saveRecord(sofia)
     }
 
     // Automação 1: Lembrete de Reunião (1h antes)
     try {
-      app.findFirstRecordByFilter('agentes_config', "slug = 'lembrete_reuniao'")
+      $app.findFirstRecordByFilter('agentes_config', "slug = 'lembrete_reuniao'")
     } catch (_) {
       const lembrete = new Record(col)
       lembrete.set('slug', 'lembrete_reuniao')
@@ -64,12 +64,12 @@ Passando para lembrar que nossa reunião está marcada para daqui a 1 hora.
 📹 Link: {{link_reuniao}}
 
 Até já!`)
-      app.dao().saveRecord(lembrete)
+      $app.dao().saveRecord(lembrete)
     }
 
     // Automação 2: Confirmação de Agendamento
     try {
-      app.findFirstRecordByFilter('agentes_config', "slug = 'confirmacao_agendamento'")
+      $app.findFirstRecordByFilter('agentes_config', "slug = 'confirmacao_agendamento'")
     } catch (_) {
       const confirmacao = new Record(col)
       confirmacao.set('slug', 'confirmacao_agendamento')
@@ -84,12 +84,12 @@ Seu agendamento foi confirmado com sucesso!
 📹 Link da reunião: {{link_reuniao}}
 
 Qualquer dúvida antes da reunião, pode me chamar aqui. Até lá!`)
-      app.dao().saveRecord(confirmacao)
+      $app.dao().saveRecord(confirmacao)
     }
 
     // Automação 3: Boas-vindas Onboarding
     try {
-      app.findFirstRecordByFilter('agentes_config', "slug = 'boas_vindas_onboarding'")
+      $app.findFirstRecordByFilter('agentes_config', "slug = 'boas_vindas_onboarding'")
     } catch (_) {
       const boasVindas = new Record(col)
       boasVindas.set('slug', 'boas_vindas_onboarding')
@@ -103,15 +103,15 @@ Estamos animados para começar o projeto do site de {{empresa}}!
 Nossa equipe já está organizando tudo. Em breve entraremos em contato para dar os próximos passos.
 
 Qualquer dúvida, estou à disposição aqui. 🙌`)
-      app.dao().saveRecord(boasVindas)
+      $app.dao().saveRecord(boasVindas)
     }
   },
   (app) => {
     // Rollback: remove os registros adicionados
     for (const slug of ['sofia', 'lembrete_reuniao', 'confirmacao_agendamento', 'boas_vindas_onboarding']) {
       try {
-        const r = app.findFirstRecordByFilter('agentes_config', `slug = '${slug}'`)
-        app.dao().deleteRecord(r)
+        const r = $app.findFirstRecordByFilter('agentes_config', `slug = '${slug}'`)
+        $app.dao().deleteRecord(r)
       } catch (_) {}
     }
   },
